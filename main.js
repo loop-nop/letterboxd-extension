@@ -24,7 +24,7 @@ function init(){
 }
 
 function hasMagicNumber(){
-    if (window.location.search.match(__MAGIC_WORD) != -1){
+    if (window.location.search.match(__MAGIC_WORD)){
         return true
     }else{
         return false
