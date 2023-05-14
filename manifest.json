@@ -1,7 +1,7 @@
 {
     "browser_specific_settings": {
       "gecko": {
-        "id": "addon@example.com",
+        "id": "letterboxd_plus@nn",
         "strict_min_version": "42.0"
       }
     },

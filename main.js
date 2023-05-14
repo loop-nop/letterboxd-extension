@@ -16,10 +16,7 @@ function init(){
     if(hasMagicNumber()){
         // let popup = showMoviePopup()
         // popup.appendChild( getRandomMovie() )
-        
-        let newURL = getRandomMovie().getElementsByClassName("film-poster")[0].getAttribute("data-target-link")
-        document.search = ""
-        document.location.href = "https://letterboxd.com" + newURL
+        goToRandomMovie()
     }
 }
 
@@ -31,12 +28,18 @@ function hasMagicNumber(){
     }
 }
 
-function getRandomMovie(){
+function getRandomMovieElement(){
     console.log("random now")
 
     let movies = document.getElementById("content").getElementsByClassName("poster-list")[0].getElementsByTagName("li")
-    let randomMovieNumber = Math.floor(Math.random() * (movies.length + 0.5))
+    let randomMovieNumber = Math.floor(Math.random() * (movies.length))
     return movies[randomMovieNumber] 
+}
+
+function goToRandomMovie(){
+        let newURL = getRandomMovieElement().getElementsByClassName("film-poster")[0].getAttribute("data-target-link")
+        document.search = ""
+        document.location.href = "https://letterboxd.com" + newURL
 }
 
 function create_random_button(){
@@ -59,7 +62,7 @@ function goToRandomPage(){
     let newUrl = getBaseURL(document.URL)
 
     if (randomPage == curentPage) {
-        getRandomMovie()
+        goToRandomMovie()
     }else{
         if (randomPage > 1){
             newUrl += "page/" + randomPage + "?" + __MAGIC_WORD
