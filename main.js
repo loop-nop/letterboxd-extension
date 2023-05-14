@@ -2,25 +2,41 @@
 This code will run ONLY on letterboxd/(username)/list/*
 */
 
+const __RANDOM_BUTTON = `<button class="button clipboardtrigger has-icon">random</button>`
+const __MAGIC_WORD = "random"
+
+
+
 init()
 
 
 function init(){
     create_random_button()
-    checkURL()
+
+    if(checkURL()){
+        return
+    }
 }
 
 function checkURL(){
+    if (window.location.search.search(__MAGIC_WORD)){
+        getRandomMovie()
 
+        return true
+    }
+
+    return false
 }
 
 function getRandomMovie(){
     console.log("random now")
+
+    let movies = document.getElementById("content").getElementsByClassName("poster-list")[0].getElementsByTagName("li")
+    console.log(movies.length);
 }
 
 function create_random_button(){
     
-    const __RANDOM_BUTTON = `<button class="button clipboardtrigger has-icon">random</button>`
 
     let ButtonSpace = document.createElement("li")
     ButtonSpace.classList.add("panel-signin")
@@ -36,34 +52,46 @@ function goToRandomPage(){
     let pages = document.getElementsByClassName("paginate-pages")[0]
     .getElementsByTagName("li")
     let maxPage = pages[pages.length - 1].outerText
-
     let randomPage = Math.floor(( Math.random() * maxPage ) + 1)
+    let curentPage = getPageNumber(document.URL) 
 
-    let curentPage 
-        if(document.URL.match("/page/")){
-            curentPage = document.URL.split("/page/")[1]
-            if ( curentPage.split().length > 1 ){
-                curentPage = curentPage.split("/")[0]}
-        }else{
-            curentPage = 1
-        }
-
-    let newUrl = document.URL
-    if(document.URL.search("/?") != -1){
-    newUrl = document.URL.split("?")[0]
-    }
+    let newUrl = getBaseURL(document.URL)
     if (randomPage == curentPage) {
         getRandomMovie()
     }else{
-        if(document.URL.search("/page/") != -1){
-            newUrl = document.URL.split("page/")[0]
-        }
-            if (randomPage > 1){
-            newUrl += "page/" + randomPage + "?RM=true"
+        if (randomPage > 1){
+            newUrl += "page/" + randomPage + "?" + __MAGIC_WORD
             document.location.href = newUrl
         }else{
-            newUrl = newUrl.split("page/")[0] + "?RM=true"
+            newUrl = newUrl.split("page/")[0] + "?" + __MAGIC_WORD
             document.location.href = newUrl
         }
     }
+}
+
+function getPageNumber(URL){
+    if (URL.search("/?") != -1){
+        URL = URL.split("?")[0]
+    }
+
+    let pageNumber = 1
+    if(document.URL.match("/page/")){
+        pageNumber = document.URL.split("/page/")[1]
+        if ( pageNumber.split().length > 1 ){
+            pageNumber = pageNumber.split("/")[0]
+        }
+    }
+    return pageNumber
+}
+
+function getBaseURL(URL){
+    URL = URL.toLowerCase()
+    if (URL.search("/?") != -1){
+        URL = URL.split("?")[0]
+    }
+    if (URL.search("page/")){
+        URL = URL.split("page/")[0]
+    }
+
+    return URL
 }
