@@ -13,31 +13,33 @@ init()
 function init(){
     create_random_button()
 
-    if(checkURL()){
-        return
+    if(hasMagicNumber()){
+        // let popup = showMoviePopup()
+        // popup.appendChild( getRandomMovie() )
+        
+        let newURL = getRandomMovie().getElementsByClassName("film-poster")[0].getAttribute("data-target-link")
+        document.search = ""
+        document.location.href = "https://letterboxd.com" + newURL
     }
 }
 
-function checkURL(){
-    if (window.location.search.search(__MAGIC_WORD)){
-        getRandomMovie()
-
+function hasMagicNumber(){
+    if (window.location.search.match(__MAGIC_WORD) != -1){
         return true
+    }else{
+        return false
     }
-
-    return false
 }
 
 function getRandomMovie(){
     console.log("random now")
 
     let movies = document.getElementById("content").getElementsByClassName("poster-list")[0].getElementsByTagName("li")
-    console.log(movies.length);
+    let randomMovieNumber = Math.floor(Math.random() * (movies.length + 0.5))
+    return movies[randomMovieNumber] 
 }
 
 function create_random_button(){
-    
-
     let ButtonSpace = document.createElement("li")
     ButtonSpace.classList.add("panel-signin")
     ButtonSpace.innerHTML = __RANDOM_BUTTON.trim();
@@ -54,8 +56,8 @@ function goToRandomPage(){
     let maxPage = pages[pages.length - 1].outerText
     let randomPage = Math.floor(( Math.random() * maxPage ) + 1)
     let curentPage = getPageNumber(document.URL) 
-
     let newUrl = getBaseURL(document.URL)
+
     if (randomPage == curentPage) {
         getRandomMovie()
     }else{
@@ -94,4 +96,14 @@ function getBaseURL(URL){
     }
 
     return URL
+}
+
+function showMoviePopup(){
+    let popup = document.createElement("ul")
+    popup.classList.add("smenu-menu")
+    popup.id = "random-popup"
+    popup.style = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: block;"
+
+    document.getElementById("content").appendChild(popup)
+    return popup
 }
