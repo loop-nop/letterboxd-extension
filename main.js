@@ -37,10 +37,18 @@ function getRandomMovieElement(){
 }
 
 function goToRandomMovie(){
-        let newURL = getRandomMovieElement().getElementsByClassName("film-poster")[0].getAttribute("data-target-link")
+    console.log("goToRandomMovie");
+    let newURL
+    newURL = getRandomMovieElement().getElementsByClassName("film-poster")[0].getAttribute("data-target-link")
+    if (newURL == null) {
+        newURL = getRandomMovieElement().getElementsByTagName("a")[0].href;
+        document.location.href = newURL
+    }else{
         document.search = ""
         document.location.href = "https://letterboxd.com" + newURL
+    }
 }
+
 
 function create_random_button(){
     let ButtonSpace = document.createElement("li")
@@ -54,13 +62,21 @@ function create_random_button(){
 }
 
 function goToRandomPage(){
+    console.log("goToRandomPage");
     let pages = document.getElementsByClassName("paginate-pages")[0]
-    .getElementsByTagName("li")
+    if (!pages) {
+        goToRandomMovie();
+        return;
+    }
+    pages = pages.getElementsByTagName("li")
+
     let maxPage = pages[pages.length - 1].outerText
     let randomPage = Math.floor(( Math.random() * maxPage ) + 1)
     let curentPage = getPageNumber(document.URL) 
     let newUrl = getBaseURL(document.URL)
 
+    console.log(randomPage);
+    console.log(curentPage);
     if (randomPage == curentPage) {
         goToRandomMovie()
     }else{
