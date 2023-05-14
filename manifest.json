@@ -1,7 +1,7 @@
 {
     "browser_specific_settings": {
       "gecko": {
-        "id": "letterboxd_plus@nn",
+        "id": "@letterboxd_plus",
         "strict_min_version": "42.0"
       }
     },
@@ -40,7 +40,7 @@
   
     "permissions": ["webNavigation", "tabs"],
   
-    "version": "0.1",
+    "version": "0.11",
   
     "web_accessible_resources": ["images/my-image.png"]
   }
