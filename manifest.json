@@ -21,11 +21,7 @@
     "icons": {
       "64": "icon.png"
     },
-  
-    "background": {
-    "scripts": ["background.js"]
-    },
-  
+ 
     "page_action": {
       "default_icon": {
         "64": "icon.png"
@@ -36,7 +32,7 @@
   
     "permissions": ["webNavigation", "tabs"],
   
-    "version": "0.14",
+    "version": "0.15",
   
     "web_accessible_resources": ["images/my-image.png"]
   }
