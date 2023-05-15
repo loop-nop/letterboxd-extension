@@ -2,7 +2,6 @@
 This code will run ONLY on letterboxd/(username)/list/*
 */
 
-const __RANDOM_BUTTON = `<button class="button clipboardtrigger has-icon">random</button>`
 const __MAGIC_WORD = "random"
 
 
@@ -57,9 +56,13 @@ function goToRandomMovie(){
 
 
 function create_random_button(){
+    let randomButton =  document.createElement("button")
+    randomButton.classList = "button clipboardtrigger has-icon"
+    randomButton.innerHTML = __MAGIC_WORD 
+
     let ButtonSpace = document.createElement("li")
     ButtonSpace.classList.add("panel-signin")
-    ButtonSpace.innerHTML = __RANDOM_BUTTON.trim();
+    ButtonSpace.appendChild(randomButton);
     ButtonSpace.onclick = goToRandomPage;
 
     let UserPanel = document.getElementById("userpanel").getElementsByTagName("ul")[0]

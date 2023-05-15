@@ -1,12 +1,10 @@
 {
     "browser_specific_settings": {
       "gecko": {
-        "id": "@letterboxd_plus",
-        "strict_min_version": "42.0"
+        "id": "@letterboxd_plus"
       }
     },
 
-    "manifest_version": 2,
     "default_locale": "en",
     "name": "letterboxd+",
     "description": "Random button for movie lists and no more!",
@@ -18,11 +16,10 @@
         }
     ],
 
-    "content_security_policy": "object-src 'self'; script-src 'self' https://*.ltrbxd.com",
+    "manifest_version": 2,
   
     "icons": {
-      "48": "icon.png",
-      "96": "icon.png"
+      "64": "icon.png"
     },
   
     "background": {
@@ -31,8 +28,7 @@
   
     "page_action": {
       "default_icon": {
-        "19": "icon.png",
-        "38": "icon.png"
+        "64": "icon.png"
       },
       "default_title": "Whereami?",
       "default_popup": "popup/geo.html"
@@ -40,7 +36,7 @@
   
     "permissions": ["webNavigation", "tabs"],
   
-    "version": "0.13",
+    "version": "0.14",
   
     "web_accessible_resources": ["images/my-image.png"]
   }
