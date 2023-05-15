@@ -9,7 +9,7 @@
     "manifest_version": 2,
     "default_locale": "en",
     "name": "letterboxd+",
-    "description": "Random button for movie lists and not more!",
+    "description": "Random button for movie lists and no more!",
 
     "content_scripts": [
         {
@@ -40,7 +40,7 @@
   
     "permissions": ["webNavigation", "tabs"],
   
-    "version": "0.12",
+    "version": "0.13",
   
     "web_accessible_resources": ["images/my-image.png"]
   }

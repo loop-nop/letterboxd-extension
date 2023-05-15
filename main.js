@@ -28,11 +28,17 @@ function hasMagicNumber(){
     }
 }
 
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+  }
+
 function getRandomMovieElement(){
     console.log("random now")
 
     let movies = document.getElementById("content").getElementsByClassName("poster-list")[0].getElementsByTagName("li")
-    let randomMovieNumber = Math.floor(Math.random() * (movies.length))
+    let randomMovieNumber = getRandomIntInclusive(0, movies.length - 1)
     return movies[randomMovieNumber] 
 }
 
@@ -71,7 +77,7 @@ function goToRandomPage(){
     pages = pages.getElementsByTagName("li")
 
     let maxPage = pages[pages.length - 1].outerText
-    let randomPage = Math.floor(( Math.random() * maxPage ) + 1)
+    let randomPage = getRandomIntInclusive(1, maxPage)
     let curentPage = getPageNumber(document.URL) 
     let newUrl = getBaseURL(document.URL)
 
