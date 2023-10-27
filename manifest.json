@@ -12,7 +12,7 @@
     "content_scripts": [
         {
         "matches": ["*://*.letterboxd.com/*/list/*", "*://*.letterboxd.com/*/watchlist/*"],
-        "js": ["/Modules/randomBtn.js"]
+        "js": ["/modules/randomBtn.js"]
         }
     ],
 
@@ -21,18 +21,23 @@
     "icons": {
       "64": "icon.png"
     },
- 
-    "page_action": {
+    
+    "browser_action": {
+      "default_title": "testT",
       "default_icon": {
         "64": "icon.png"
       },
-      "default_title": "Whereami?",
-      "default_popup": "popup/geo.html"
+      "default_popup": "options/options.html"
     },
   
-    "permissions": ["webNavigation", "tabs"],
+    "permissions": ["webNavigation"],
   
-    "version": "0.16",
+    "version": "0.18",
+
+    "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": false
+   },
   
     "web_accessible_resources": ["images/my-image.png"]
   }

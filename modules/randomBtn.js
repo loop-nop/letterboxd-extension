@@ -3,7 +3,7 @@ This code will run ONLY on
     letterboxd/(username)/list/*
     letterboxd/(username)/watchlist/*
 */
-const __MAGIC_WORD = "random"
+const MAGIC_WORD = "random"
 
 init()
 
@@ -19,7 +19,7 @@ function init(){
 }
 
 function hasMagicNumber(){
-    if (window.location.search.match(__MAGIC_WORD)){
+    if (window.location.search.match(MAGIC_WORD)){
         return true
     }else{
         return false
@@ -90,10 +90,10 @@ function goToRandomPage(){
         goToRandomMovie()
     }else{
         if (randomPage > 1){
-            newUrl += "page/" + randomPage + "?" + __MAGIC_WORD
+            newUrl += "page/" + randomPage + "?" + MAGIC_WORD
             document.location.href = newUrl
         }else{
-            newUrl = newUrl.split("page/")[0] + "?" + __MAGIC_WORD
+            newUrl = newUrl.split("page/")[0] + "?" + MAGIC_WORD
             document.location.href = newUrl
         }
     }
