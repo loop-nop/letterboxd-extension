@@ -11,7 +11,7 @@
 
     "content_scripts": [
         {
-        "matches": ["*://*.letterboxd.com/*/list/*"],
+        "matches": ["*://*.letterboxd.com/*/list/*", "*://*.letterboxd.com/*/watchlist/*"],
         "js": ["main.js"]
         }
     ],
