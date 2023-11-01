@@ -1,43 +1,46 @@
 {
-    "browser_specific_settings": {
-      "gecko": {
-        "id": "@letterboxd_plus"
-      }
-    },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@letterboxd_plus"
+    }
+  },
 
-    "default_locale": "en",
-    "name": "letterboxd+",
-    "description": "Random button for movie lists and no more!",
+  "default_locale": "en",
+  "name": "letterboxd+",
+  "description": "Random button for movie lists and no more!",
 
-    "content_scripts": [
-        {
-        "matches": ["*://*.letterboxd.com/*/list/*", "*://*.letterboxd.com/*/watchlist/*"],
-        "js": ["/modules/randomBtn.js"]
-        }
-    ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.letterboxd.com/*/list/*",
+        "*://*.letterboxd.com/*/watchlist/*"
+      ],
+      "js": ["/modules/randomBtn.js"]
+    }
+  ],
 
-    "manifest_version": 2,
-  
-    "icons": {
+  "manifest_version": 2,
+
+  "icons": {
+    "64": "icon.png"
+  },
+
+  "browser_action": {
+    "default_title": "testT",
+    "default_icon": {
       "64": "icon.png"
     },
-    
-    "browser_action": {
-      "default_title": "testT",
-      "default_icon": {
-        "64": "icon.png"
-      },
-      "default_popup": "options/options.html"
-    },
-  
-    "permissions": ["webNavigation"],
-  
-    "version": "0.18",
+    "default_popup": "options/options.html"
+  },
 
-    "options_ui": {
+  "permissions": ["webNavigation"],
+
+  "version": "0.20",
+
+  "options_ui": {
     "page": "options/options.html",
     "open_in_tab": false
-   },
-  
-    "web_accessible_resources": ["images/my-image.png"]
-  }
+  },
+
+  "web_accessible_resources": ["images/my-image.png"]
+}
