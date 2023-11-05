@@ -5,13 +5,17 @@ This code will run ONLY on
 */
 const MAGIC_WORD = "random"
 let button = null;
+let higlightedCard = null
 const fastRandom = false;
 
+const higlightStyle = "border: 5px pink solid; height: fit-content; z-index: 9001;";
+
 init()
+//reactChecker()
 
 // test
 maximazeContent()
-prepareGrid(0, 4)
+prepareGrid(0, 8)
 
 function init(){
 	const magicIndex = getMagicWord()
@@ -227,7 +231,7 @@ function prepareGrid(keepIndex, keepCount){
 	const maxIndex = cards.length -1;
 	keepCount = Math.min(keepCount, cards.length);
 
-	let keep = [keepIndex]
+	const keep = [keepIndex]
 	for (i = 0; i < keepCount - 1; i++){
 
 			let randomNum = getRandomIntInclusive(0, maxIndex);
@@ -249,15 +253,49 @@ function prepareGrid(keepIndex, keepCount){
 			}
 			keep.push(randomNum)
 	}
+	highlightCard(cards[keepIndex]);
 
-	let toRemove = [];
+	const toRemove = [];
 	for (i = 0; i <= maxIndex; i++){
-			if (!(keep.includes(i))){
-					cards[i].style = "display: none;";
-					toRemove.push(cards[i]);
-			}
+		if (!(keep.includes(i))){
+				cards[i].style = "display: none;";
+				toRemove.push(cards[i]);
+		}
 	}
 	for (i = 0; i < toRemove.length; i++){
 			toRemove[i].remove()
 	}
 }
+
+function highlightCard(card){
+	if (higlightedCard){
+		higlightedCard.style = "";
+	}
+	higlightedCard = card;
+	card.style = higlightStyle;
+	posCard(card)
+	console.debug(card)
+}
+
+
+function posCard(card){
+	card.style = higlightStyle + "height: fit-content; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);"
+}
+
+//async function reactChecker(){
+//	let loaded = false
+//	const pc = document.getElementsByClassName("poster-container")[0];
+//
+//	while (!loaded){
+//		if (pc.getElementsByTagName("img")[0]){
+//			loaded = true;
+//			break;
+//		}
+//		await new Promise(r => setTimeout(r, 2000));
+//	}
+//
+//	if (higlightedCard){
+//		highlightCard(higlightedCard);
+//	}
+//	console.log("loaded", higlightedCard)
+//}
