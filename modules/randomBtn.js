@@ -6,18 +6,53 @@ This code will run ONLY on
 const MAGIC_WORD = "random"
 let button = null;
 let higlightedCard = null
+let zMemory = null
+let animId = null;
 const fastRandom = false;
 
-const higlightStyle = "border: 5px pink solid; height: fit-content; z-index: 9001;";
+const style = `
+
+.lpGrid {
+	!important;
+	height: 100vh;
+	flex: auto;
+	margin-right: 2em;
+}
+
+.lpGrid > li {
+	height: fit-content;
+}
+
+.lpHiglight {
+	border: 5px pink solid;
+	z-index: 9001;
+}
+
+.lpFloating {
+	height: fit-content;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.lpCenter {
+	animation: test 5s 5s;
+	transform: translate(-50%, -50%);
+}
+
+`
+
 
 init()
-//reactChecker()
 
 // test
 maximazeContent()
-prepareGrid(0, 8)
+const cards = prepareGrid(0, 10)
+CaruselCards(cards)
 
 function init(){
+	addStyle()
+
 	const magicIndex = getMagicWord()
 	//console.debug(magicIndex)
 	if(magicIndex != null){
@@ -203,16 +238,6 @@ function getListUrl(pageUrl){
 	return listUrl
 }
 
-function _showMoviePopup(){
-	const popup = document.createElement("ul");
-	popup.classList.add("smenu-menu");
-	popup.id = "random-popup";
-	popup.style = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: block;";
-
-	document.getElementById("content").appendChild(popup);
-	return popup;
-}
-
 function maximazeContent(){
 	const contentWraper = document.getElementById("content").getElementsByClassName(
 																									"content-wrap")[0];
@@ -221,7 +246,7 @@ function maximazeContent(){
 
 	contentWraper.style = "width: auto; margin: 0em 2em";
 	contentColWraper.style = "width: 100%;";
-	gridElement.style = "height: 100vh; flex: auto; margin-right: 2em;";
+	gridElement.classList.add("lpGrid");
 	gridElement.scrollIntoView();
 }
 
@@ -253,49 +278,93 @@ function prepareGrid(keepIndex, keepCount){
 			}
 			keep.push(randomNum)
 	}
-	highlightCard(cards[keepIndex]);
 
-	const toRemove = [];
+	const keepCards = [];
+	for (i=0; i < keep.length; i++){
+		keepCards.push(cards[keep[i]])
+	}
+
 	for (i = 0; i <= maxIndex; i++){
 		if (!(keep.includes(i))){
-				cards[i].style = "display: none;";
-				toRemove.push(cards[i]);
+			cards[i].style.display = "none";
+		}else{
+			cards[i].style.display = "block";
 		}
 	}
-	for (i = 0; i < toRemove.length; i++){
-			toRemove[i].remove()
-	}
+
+	return keepCards;
 }
 
 function highlightCard(card){
 	if (higlightedCard){
-		higlightedCard.style = "";
+		higlightedCard.classList.remove("lpHiglight");
+		higlightedCard.style.zIndex = zMemory;
 	}
+	zMemory = card.style.zIndex;
 	higlightedCard = card;
-	card.style = higlightStyle;
-	posCard(card)
-	console.debug(card)
+	card.classList.add("lpHiglight");
+	card.style.zIndex = 9001;
+	//console.debug(card)
 }
 
 
-function posCard(card){
-	card.style = higlightStyle + "height: fit-content; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);"
+function CaruselCards(cards){
+	const listGrid = document.getElementsByClassName("poster-list")[0];
+
+	const space = (Math.PI * 2) / cards.length;
+	
+	for (i = 0; i < cards.length; i++){
+		const card = cards[i];
+		card.style.zIndex = getRandomIntInclusive(1, cards.length)
+	}
+
+	const rand = Math.random()
+	const fps = 60
+	const frameTime = 1/fps
+	const animationTime = 2 + 2*rand
+	const initSpeed = 2
+	let time = -animationTime
+	let speed = initSpeed
+	clearInterval(animId);
+	animId = setInterval(frame, frameTime*1000);
+	function frame() {
+		if (time > 0) {
+			clearInterval(animId);
+			highlightCard(cards[0]);
+		} else {
+			time += frameTime;
+			speed -= initSpeed * 1 / (animationTime*fps) * (rand+0.6)
+
+			const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
+			const gridSize = [listGrid.clientWidth, listGrid.clientHeight];
+
+			const minDist = (Math.min(gridSize[0], gridSize[1]) - Math.max(cardSize[0], cardSize[1])) / 2
+
+			for (i = 0; i < cards.length; i++){
+				const card = cards[i];
+				card.classList.add("lpFloating");
+				//card.classList.add("lpCenter");
+
+				const d = time * speed + (space * i)
+				const x = minDist * Math.sin(d);
+				const y = minDist * Math.cos(d);
+				card.style.left = gridSize[0]/2 - cardSize[0]/2 + x + "px";
+				card.style.top = gridSize[1]/2 - cardSize[1]/2 - y + "px";
+
+				if (y > minDist-2 && x <= 0){
+					highlightCard(card);
+				}
+			}
+		}	
+	}
 }
 
-//async function reactChecker(){
-//	let loaded = false
-//	const pc = document.getElementsByClassName("poster-container")[0];
-//
-//	while (!loaded){
-//		if (pc.getElementsByTagName("img")[0]){
-//			loaded = true;
-//			break;
-//		}
-//		await new Promise(r => setTimeout(r, 2000));
-//	}
-//
-//	if (higlightedCard){
-//		highlightCard(higlightedCard);
-//	}
-//	console.log("loaded", higlightedCard)
-//}
+function addStyle(){
+	if (document.getElementById("lpStyle"))
+		return;
+	const s = document.createElement("style")
+	s.innerHTML = style
+	s.id = "lpStyle"
+	const head = document.getElementsByTagName("head")[0]
+	head.appendChild(s);
+}
