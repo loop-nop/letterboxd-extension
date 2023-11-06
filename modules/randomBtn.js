@@ -9,7 +9,7 @@ This code will run ONLY on
 const MAGIC_WORD = "random"
 let button = null;
 const animationName = "spin";
-const fastRandom = true;
+const fastRandom = false;
 
 let highlightedCard = null
 let zMemory = null
@@ -21,10 +21,16 @@ const style = `
 	height: 100vh;
 	flex: auto;
 	margin-right: 2em;
+	max-width: none !important;
 }
 
 .lpGrid > li {
 	height: fit-content;
+}
+
+.lpGrid > li > div {
+	height: 100%;
+	width: 100%;
 }
 
 .lpHighlight {
@@ -33,8 +39,8 @@ const style = `
 }
 
 .lpSelect {
-	!important;
-	box-shadow: 0px 0px 1em 0.5em lightblue;
+	box-shadow: 0px 0px 1em 0.5em lightblue !important;
+	transform: scale(1.15) !important;
 }
 
 .lpFloating {
@@ -62,6 +68,7 @@ function init(){
 
 function start(){
 	if (button.disabled){
+		console.debug("button disabled")
 		return
 	}
 
@@ -173,8 +180,7 @@ async function getPageSize(url){
 }
 
 function getPageMovies(pageContent){
-	const content = pageContent.getElementById("content")
-	const grid = getGrid(content)
+	const grid = getGrid(pageContent)
 	const movies = grid.getElementsByTagName("li")
 
 	return movies;
@@ -246,7 +252,7 @@ function maximizeContent(){
 	const contentWrapper = document.getElementById("content").getElementsByClassName(
 																									"content-wrap")[0];
 	const contentColWrapper = contentWrapper.getElementsByClassName("col-main")[0]
-	const gridElement = contentColWrapper.getElementsByClassName("film-list")[0];
+	const gridElement = getGrid(document);
 
 	contentWrapper.style = "width: auto; margin: 0em 2em";
 	contentColWrapper.style = "width: 100%;";
@@ -255,12 +261,12 @@ function maximizeContent(){
 }
 
 function prepareGrid(keepIndex, keepCount){
-	const listGrid = document.getElementsByClassName("poster-list")[0];
-	const cards = document.getElementsByClassName("poster-container");
+	const listGrid = getGrid(document);
+	const cards = listGrid.getElementsByClassName("poster-container");
 	const maxIndex = cards.length -1;
 	keepCount = Math.min(keepCount, cards.length);
 
-	//console.debug(listGrid, cards)
+	console.debug(listGrid, cards)
 
 	const keep = [keepIndex]
 	for (i = 0; i < keepCount - 1; i++){
@@ -314,7 +320,16 @@ function highlightCard(card){
 }
 
 function getGrid(doc){
-	return doc.getElementsByClassName("film-list")[0]
+	let grid = doc.getElementById("content").getElementsByClassName("film-list")[0];
+	if (!grid){
+		grid = doc.getElementById("content").getElementsByClassName("poster-list")[0];
+	}
+	return grid
+}
+
+function getCards(elm){
+	const cards = elm.getElementsByClassName("poster-container");
+	return cards;
 }
 
 function animateCarousel(winnerIndex){
@@ -330,15 +345,15 @@ function animateCarousel(winnerIndex){
 	}
 
 	const rand = Math.random()
-	const fps = 24
+	const fps = 48
 	const frameTime = 1/fps
-	const animationTime = 5 + 2*rand
+	const animationTime = 2 + 2*rand
 	const initSpeed = 1.5
 	let time = -animationTime
 	let speed = initSpeed
 
 	const fontSize = Number(window.getComputedStyle(document.body).getPropertyValue('font-size').match(/\d+/)[0])
-	const margin = fontSize * 4
+	const margin = fontSize * 6
 	console.debug(fontSize, "margin",margin)
 	const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
 
