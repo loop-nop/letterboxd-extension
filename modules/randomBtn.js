@@ -11,7 +11,7 @@ let button = null;
 const animationName = "spin";
 const fastRandom = true;
 
-let higlightedCard = null
+let highlightedCard = null
 let zMemory = null
 let animId = null;
 
@@ -27,7 +27,7 @@ const style = `
 	height: fit-content;
 }
 
-.lpHiglight {
+.lpHighlight {
 	border: 0.5em gray solid;
 	box-shadow: 0px 0px 1em 0.5em gray;
 }
@@ -121,8 +121,8 @@ function selectMovie(index){
 
 	switch (animationName) {
 		case "spin":
-			maximazeContent()
-			animateCarusel(index - 1)
+			maximizeContent()
+			animateCarousel(index - 1)
 			break;
 
 		default:
@@ -242,14 +242,14 @@ function getListUrl(pageUrl){
 	return listUrl
 }
 
-function maximazeContent(){
-	const contentWraper = document.getElementById("content").getElementsByClassName(
+function maximizeContent(){
+	const contentWrapper = document.getElementById("content").getElementsByClassName(
 																									"content-wrap")[0];
-	const contentColWraper = contentWraper.getElementsByClassName("col-main")[0]
-	const gridElement = contentColWraper.getElementsByClassName("film-list")[0];
+	const contentColWrapper = contentWrapper.getElementsByClassName("col-main")[0]
+	const gridElement = contentColWrapper.getElementsByClassName("film-list")[0];
 
-	contentWraper.style = "width: auto; margin: 0em 2em";
-	contentColWraper.style = "width: 100%;";
+	contentWrapper.style = "width: auto; margin: 0em 2em";
+	contentColWrapper.style = "width: 100%;";
 	gridElement.classList.add("lpGrid");
 	gridElement.scrollIntoView();
 }
@@ -302,12 +302,12 @@ function prepareGrid(keepIndex, keepCount){
 }
 
 function highlightCard(card){
-	if (higlightedCard){
-		higlightedCard.classList.remove("lpSelect");
-		higlightedCard.style.zIndex = zMemory;
+	if (highlightedCard){
+		highlightedCard.classList.remove("lpSelect");
+		highlightedCard.style.zIndex = zMemory;
 	}
 	zMemory = card.style.zIndex;
-	higlightedCard = card;
+	highlightedCard = card;
 	card.classList.add("lpSelect");
 	card.style.zIndex = 9001;
 	//console.debug(card)
@@ -317,7 +317,7 @@ function getGrid(doc){
 	return doc.getElementsByClassName("film-list")[0]
 }
 
-function animateCarusel(winnerIndex){
+function animateCarousel(winnerIndex){
 	const cards = prepareGrid(winnerIndex, 10)
 	const listGrid = getGrid(document)
 	const space = (Math.PI * 2) / cards.length;
@@ -325,7 +325,7 @@ function animateCarusel(winnerIndex){
 	for (i = 0; i < cards.length; i++){
 		const card = cards[i];
 		card.style.zIndex = getRandomIntInclusive(1, cards.length);
-		card.classList.add("lpHiglight");
+		card.classList.add("lpHighlight");
 		//card.style.borderColor = "grey";
 	}
 
