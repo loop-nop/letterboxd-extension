@@ -8,8 +8,9 @@ This code will run ONLY on
 
 const MAGIC_WORD = "random"
 let button = null;
-const animationName = "spin";
+const animationName = "lootbox";
 const fastRandom = false;
+const FXtime = 2;
 
 let highlightedCard = null
 let zMemory = null
@@ -36,21 +37,23 @@ const style = `
 .lpHighlight {
 	border: 0.5em gray solid;
 	box-shadow: 0px 0px 1em 0.5em gray;
+	border-radius: 0.5em;
 }
 
 .lpSelect {
+	border: 0.5em lightblue solid !important;
 	box-shadow: 0px 0px 1em 0.5em lightblue !important;
 	transform: scale(1.15) !important;
 }
 
 .lpFloating {
+	transition: none !important;
 	height: fit-content;
 	position: absolute;
 	left: 50%;
 	top: 50%;
 }
 `
-
 
 init()
 
@@ -131,7 +134,10 @@ function selectMovie(index){
 			maximizeContent()
 			animateCarousel(index - 1)
 			break;
-
+		case "lootbox":
+			maximizeContent()
+			animateLootbox(index - 1)
+			break;
 		default:
 			openMovie(movie)
 	}
@@ -254,7 +260,7 @@ function maximizeContent(){
 	const contentColWrapper = contentWrapper.getElementsByClassName("col-main")[0]
 	const gridElement = getGrid(document);
 
-	contentWrapper.style = "width: auto; margin: 0em 2em";
+	contentWrapper.style = "width: 100%; margin: 0em 2em";
 	contentColWrapper.style = "width: 100%;";
 	gridElement.classList.add("lpGrid");
 	gridElement.scrollIntoView();
@@ -333,28 +339,30 @@ function getCards(elm){
 }
 
 function animateCarousel(winnerIndex){
-	const cards = prepareGrid(winnerIndex, 10)
-	const listGrid = getGrid(document)
+	const cards = prepareGrid(winnerIndex, 10);
+	const listGrid = getGrid(document);
 	const space = (Math.PI * 2) / cards.length;
 	
 	for (i = 0; i < cards.length; i++){
 		const card = cards[i];
 		card.style.zIndex = getRandomIntInclusive(1, cards.length);
+		card.classList.add("lpFloating");
 		card.classList.add("lpHighlight");
 		//card.style.borderColor = "grey";
 	}
 
-	const rand = Math.random()
-	const fps = 48
-	const frameTime = 1/fps
-	const animationTime = 2 + 2*rand
-	const initSpeed = 1.5
-	let time = -animationTime
-	let speed = initSpeed
+	const rand = Math.random();
+	const fps = 48;
+	const frameTime = 1/fps;
+	const animationTime = FXtime + 2*rand;
+	const initSpeed = 1.5;
+	let time = -animationTime;
+	let speed = initSpeed;
+	const speedResistance = initSpeed * (1 / (animationTime*fps) * (0.8 + rand/2));
 
-	const fontSize = Number(window.getComputedStyle(document.body).getPropertyValue('font-size').match(/\d+/)[0])
-	const margin = fontSize * 6
-	console.debug(fontSize, "margin",margin)
+	const fontSize = Number(window.getComputedStyle(document.body).getPropertyValue('font-size').match(/\d+/)[0]);
+	const margin = fontSize * 6;
+	console.debug(fontSize, "margin",margin);
 	const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
 
 	clearInterval(animId);
@@ -366,16 +374,15 @@ function animateCarousel(winnerIndex){
 			openMovie(cards[0]);
 		} else {
 			time += frameTime;
-			speed -= initSpeed * 1 / (animationTime*fps) * (0.8 + rand/2)
+			speed -= speedResistance;
 			const gridSize = [listGrid.clientWidth, listGrid.clientHeight];
 
 			const minDist = (Math.min(gridSize[0] - margin, gridSize[1] - margin) - Math.max(cardSize[0], cardSize[1])) / 2
 
 			for (i = 0; i < cards.length; i++){
 				const card = cards[i];
-				card.classList.add("lpFloating");
 
-				const d = time * speed + (space * i)
+				const d = time * speed + (space * i);
 				const x = minDist * Math.sin(d);
 				const y = minDist * Math.cos(d);
 				card.style.left = gridSize[0]/2 - cardSize[0]/2 + x + "px";
@@ -389,12 +396,81 @@ function animateCarousel(winnerIndex){
 	}
 }
 
+function animateLootbox(winnerIndex){
+	const cards = prepareGrid(winnerIndex, 10);
+	const listGrid = getGrid(document);
+	
+
+	const extraCards = 4;
+	const rand = Math.random();
+	const fps = 48;
+	const frameTime = 1/fps;
+	const animationTime = FXtime + 2*rand;
+	const initSpeed = 1.5;
+	let time = -animationTime;
+	let speed = initSpeed;
+	const speedResistance = initSpeed * (1 / (animationTime*fps) * (0.8 + rand/2));
+
+	const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
+	let gridSize = [listGrid.clientWidth, listGrid.clientHeight];
+	let cardCenter = (gridSize[0]/2 - cardSize[0]/2);
+	const extraSpace = cardSize[0] * extraCards / 2
+	let lbLenght =  gridSize[0] + extraSpace *2;
+	let space = lbLenght / cards.length;
+	
+	// first pass
+	for (i = 0; i < cards.length; i++){
+		const card = cards[i];
+		card.style.zIndex = getRandomIntInclusive(1, cards.length);
+		card.classList.add("lpFloating");
+		card.classList.add("lpHighlight");
+		card.style.top = gridSize[1]/2 - cardSize[1]/2 + "px";
+		card.style.left = cardCenter + "px";
+	}
+
+	clearInterval(animId);
+	animId = setInterval(frame, frameTime*1000);
+
+	// animation loop
+	let d = -lbLenght;
+
+	function frame() {
+		if (time > 0) {
+			clearInterval(animId);
+			highlightCard(cards[0]);
+			openMovie(cards[0]);
+		} else {
+			time += frameTime;
+			speed -= speedResistance;
+			gridSize = [listGrid.clientWidth, listGrid.clientHeight];
+			cardCenter = gridSize[0]/2 - cardSize[0]/2
+			lbLenght =  gridSize[0] + extraSpace *2;
+			space = lbLenght / cards.length;
+			const offset = extraSpace + cardCenter
+
+			for (i = 0; i < cards.length; i++){
+				const card = cards[i];
+
+				d = speed * -time * cardSize[0]*5;
+				cardCenter = (gridSize[0]/2 - cardSize[0]/2);
+				const cardPos = ((offset + d + space * i) % lbLenght) - extraSpace;
+				card.style.left = cardPos + "px";
+				card.style.top = gridSize[1]/2 - cardSize[1]/2 + "px";
+
+				if (cardPos - cardCenter > -10 && cardPos - cardCenter <= 10){
+					highlightCard(card);
+				}
+			}
+		}	
+	}
+}
+
 function addStyle(){
 	if (document.getElementById("lpStyle"))
 		return;
-	const s = document.createElement("style")
-	s.innerHTML = style
-	s.id = "lpStyle"
-	const head = document.getElementsByTagName("head")[0]
+	const s = document.createElement("style");
+	s.innerHTML = style;
+	s.id = "lpStyle";
+	const head = document.getElementsByTagName("head")[0];
 	head.appendChild(s);
 }
