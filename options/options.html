@@ -2,29 +2,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<meta name="color-scheme" content = "light dark"/>
-	<link rel="stylesheet" href="style.css">
-	<title>letterboxd+ options</title>
+		<meta charset="utf-8"/>
+		<meta name="color-scheme" content = "light dark"/>
+		<link rel="stylesheet" href="style.css">
+		<title>letterboxd+ options</title>
 </head>
 	<body>
-		<div style="text-align:left; margin:0">
-			<ul style="list-style:none; padding:0">
-				<li><input type="checkbox" name="random" value="true" disabled checked>random button:
-					<select name="randomType" value="true" disabled>random type
-						<option value="true">accurate</option>
-						<option value="fast">fast</option>
-					</select>
-				</li>
-				<li><input type="checkbox" name="randomFX" value="false" disabled>random FX (soon™)
-					<select name="randomFXType" value="lootboxd" disabled >random type
-						<option value="lootboxd">lootboxd</option>
-						<option value="spin">spin</option>
-					</select>
-				</li>
-				<li><input type="checkbox" name="light theme" value="false" disabled>light theme (sooon™)</li>
-			</ul>
-			<p>//menu is not ready yet ;<<p>
-		</div>
+		<form>
+			<button type="submit">Save</button>
+			<div style="text-align:left; margin:0">
+				<ul style="list-style:none; padding:0">
+						<input type="checkbox" name="random" value="true" disabled checked>random button:
+					<li>
+						method: <select name="randomType" value="accurate">random type
+							<option value="accurate">accurate</option>
+							<option value="fast">fast</option>
+						</select>
+					</li>
+					<li>
+						animation: <select name="randomFXType" value="lootboxd">random type
+							<option value="none">none</option>
+							<option value="lootboxd">lootboxd</option>
+							<option value="spin">spin</option>
+						</select>
+					</li>
+				</ul>
+				<input type="checkbox" name="light theme" value="false" disabled>light theme (sooon™)
+			</div>
+		</form>
+		<script src="options.js"></script>
 	</body>
 </html>

@@ -2,66 +2,34 @@
 This code will run ONLY on 
     letterboxd/(username)/list/*
     letterboxd/(username)/watchlist/*
+
+Module for choosing random movie from a list.
 */
 
-// code quality is getting much worse :)
-
 const MAGIC_WORD = "random"
-let button = null;
 const animationName = "lootbox";
 const fastRandom = false;
 const FXtime = 2;
 
+// start button for side menu
+let button = null;
+
 let highlightedCard = null
+// remember z-layer for highlightedCard
 let zMemory = null
+
+// animation loop id
 let animId = null;
 
-const style = `
-.lpGrid {
-	!important;
-	height: 100vh;
-	flex: auto;
-	margin-right: 2em;
-	max-width: none !important;
-}
-
-.lpGrid > li {
-	height: fit-content;
-}
-
-.lpGrid > li > div {
-	height: 100%;
-	width: 100%;
-}
-
-.lpHighlight {
-	border: 0.5em gray solid;
-	box-shadow: 0px 0px 1em 0.5em gray;
-	border-radius: 0.5em;
-}
-
-.lpSelect {
-	border: 0.5em lightblue solid !important;
-	box-shadow: 0px 0px 1em 0.5em lightblue !important;
-	transform: scale(1.15) !important;
-}
-
-.lpFloating {
-	transition: none !important;
-	height: fit-content;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-}
-`
-
+// main entry
 init()
 
 function init(){
 	addStyle()
 
+	// random button opens magic url
 	const magicIndex = getMagicWord()
-	//console.debug(magicIndex)
+
 	if(magicIndex != null){
 			selectMovie(magicIndex)
 	}else{
@@ -313,7 +281,7 @@ function prepareGrid(keepIndex, keepCount){
 	return keepCards;
 }
 
-function highlightCard(card){
+function selectCard(card){
 	if (highlightedCard){
 		highlightedCard.classList.remove("lpSelect");
 		highlightedCard.style.zIndex = zMemory;
@@ -370,7 +338,7 @@ function animateCarousel(winnerIndex){
 	function frame() {
 		if (time > 0) {
 			clearInterval(animId);
-			highlightCard(cards[0]);
+			selectCard(cards[0]);
 			openMovie(cards[0]);
 		} else {
 			time += frameTime;
@@ -389,7 +357,8 @@ function animateCarousel(winnerIndex){
 				card.style.top = gridSize[1]/2 - cardSize[1]/2 - y + "px";
 
 				if (y > minDist-2 && x <= 0){
-					highlightCard(card);
+					// TODO highlight the best card / affter loop
+					selectCard(card);
 				}
 			}
 		}	
@@ -397,11 +366,14 @@ function animateCarousel(winnerIndex){
 }
 
 function animateLootbox(winnerIndex){
-	const cards = prepareGrid(winnerIndex, 10);
 	const listGrid = getGrid(document);
-	
+	let gridSize = [listGrid.clientWidth, listGrid.clientHeight];
+	const bestCount = Math.floor(gridSize[0] / 140);
 
-	const extraCards = 4;
+	const extraCards = 10;
+	const cards = prepareGrid(winnerIndex, bestCount + extraCards / 2);
+	const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
+	
 	const rand = Math.random();
 	const fps = 48;
 	const frameTime = 1/fps;
@@ -411,8 +383,6 @@ function animateLootbox(winnerIndex){
 	let speed = initSpeed;
 	const speedResistance = initSpeed * (1 / (animationTime*fps) * (0.8 + rand/2));
 
-	const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
-	let gridSize = [listGrid.clientWidth, listGrid.clientHeight];
 	let cardCenter = (gridSize[0]/2 - cardSize[0]/2);
 	const extraSpace = cardSize[0] * extraCards / 2
 	let lbLenght =  gridSize[0] + extraSpace *2;
@@ -437,7 +407,7 @@ function animateLootbox(winnerIndex){
 	function frame() {
 		if (time > 0) {
 			clearInterval(animId);
-			highlightCard(cards[0]);
+			selectCard(cards[0]);
 			openMovie(cards[0]);
 		} else {
 			time += frameTime;
@@ -458,7 +428,7 @@ function animateLootbox(winnerIndex){
 				card.style.top = gridSize[1]/2 - cardSize[1]/2 + "px";
 
 				if (cardPos - cardCenter > -10 && cardPos - cardCenter <= 10){
-					highlightCard(card);
+					selectCard(card);
 				}
 			}
 		}	
@@ -466,6 +436,44 @@ function animateLootbox(winnerIndex){
 }
 
 function addStyle(){
+	const style = `
+	.lpGrid {
+		!important;
+		height: 100vh;
+		flex: auto;
+		margin-right: 2em;
+		max-width: none !important;
+	}
+
+	.lpGrid > li {
+		height: fit-content;
+	}
+
+	.lpGrid > li > div {
+		height: 100%;
+		width: 100%;
+	}
+
+	.lpHighlight {
+		border: 0.5em gray solid;
+		box-shadow: 0px 0px 1em 0.5em gray;
+		border-radius: 0.5em;
+	}
+
+	.lpSelect {
+		border: 0.5em lightblue solid !important;
+		box-shadow: 0px 0px 1em 0.5em lightblue !important;
+		transform: scale(1.15) !important;
+	}
+
+	.lpFloating {
+		transition: none !important;
+		height: fit-content;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+	}
+	`
 	if (document.getElementById("lpStyle"))
 		return;
 	const s = document.createElement("style");
