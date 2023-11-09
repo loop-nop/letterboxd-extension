@@ -6,10 +6,21 @@ This code will run ONLY on
 Module for choosing random movie from a list.
 */
 
-const MAGIC_WORD = "random"
-const animationName = "lootbox";
-const fastRandom = false;
-const FXtime = 2;
+let settings = {};
+
+class Settings{
+	constructor(){
+		this.random = true;
+		this.randomMethod = "fast";
+		this.randomAnimation = "spin";
+		this.randomAnimationTime = 2;
+	}
+}
+
+let MAGIC_WORD = "random"
+let animationName = "lootboxd";
+let fastRandom = "fast";
+let FXtime = 2;
 
 // start button for side menu
 let button = null;
@@ -21,10 +32,15 @@ let zMemory = null
 // animation loop id
 let animId = null;
 
-// main entry
-init()
 
-function init(){
+
+init();
+
+
+async function init(){
+	await checkSettings()
+	if (!settings.random)
+		return
 	addStyle()
 
 	// random button opens magic url
@@ -39,34 +55,37 @@ function init(){
 
 function start(){
 	if (button.disabled){
-		console.debug("button disabled")
 		return
 	}
 
 	const totalPages = getPagesCount(document);
-	if (fastRandom){
-		const randomPage = getRandomIntInclusive(1, totalPages);
-		goToMovie(randomPage, -1)
-	}else{
-		const firstPageUrl = getPageUrl(1);
-		const paginationSize = getPageSize(firstPageUrl);
-		const lastPageUrl = getPageUrl(totalPages);
-		const lastPageSize = getPageSize(lastPageUrl);
-		
-		button.disabled = true;
+	switch (fastRandom){
+		case "fast":
+			const randomPage = getRandomIntInclusive(1, totalPages);
+			goToMovie(randomPage, -1)
+			break;
+		case "accurate":
+		default:
+			const firstPageUrl = getPageUrl(1);
+			const paginationSize = getPageSize(firstPageUrl);
+			const lastPageUrl = getPageUrl(totalPages);
+			const lastPageSize = getPageSize(lastPageUrl);
+			
+			button.disabled = true;
 
-		Promise.all([paginationSize, lastPageSize]).then( (values) => {
-			const totalMoviesCount = values[0] * (totalPages - 1) + values[1];
-			const randomMovieIndex = getRandomIntInclusive(1, totalMoviesCount);
-			const moviePage = Math.ceil(randomMovieIndex/values[0]);
-			const movieIndex = randomMovieIndex%values[0];
+			Promise.all([paginationSize, lastPageSize]).then( (values) => {
+				const totalMoviesCount = values[0] * (totalPages - 1) + values[1];
+				const randomMovieIndex = getRandomIntInclusive(1, totalMoviesCount);
+				const moviePage = Math.ceil(randomMovieIndex/values[0]);
+				const movieIndex = randomMovieIndex%values[0];
 
-			console.debug("pagination =", values[0], "lastPageSize =", values[1], "total:", totalMoviesCount,
-											totalPages, "randomIndex:",randomMovieIndex, moviePage, movieIndex);
-			button.disabled = false;
-			goToMovie(moviePage, movieIndex);
-		});
-	}
+				console.debug("pagination =", values[0], "lastPageSize =", values[1], "total:", totalMoviesCount,
+												totalPages, "randomIndex:",randomMovieIndex, moviePage, movieIndex);
+				button.disabled = false;
+				goToMovie(moviePage, movieIndex);
+			});
+			break;
+		}
 }
 
 function goToMovie(pageNumber, movieIndex){
@@ -102,7 +121,7 @@ function selectMovie(index){
 			maximizeContent()
 			animateCarousel(index - 1)
 			break;
-		case "lootbox":
+		case "lootboxd":
 			maximizeContent()
 			animateLootbox(index - 1)
 			break;
@@ -114,22 +133,25 @@ function selectMovie(index){
 function openMovie(movieElement){
 	let url = movieElement.getElementsByClassName("film-poster")[0].getAttribute("data-target-link");
 	if (url != null){
-			url = "https://letterboxd.com" + url;
+		url = "https://letterboxd.com" + url;
 	}
 	else{
-			url = movieElement.getElementsByTagName("a")[0].href;
+		url = movieElement.getElementsByTagName("a")[0].href;
 	}
 
 	if (url){
-			document.search = "";
+		if (animationName == "none")
+			document.location.replace(url);
+		else
 			document.location.href = url;
 	}else{
-			console.error("failed to get movie url");
+		console.error("failed to get movie url");
 	}
 }
 
 function getMagicWord(){
-	const params = (new URL(document.URL)).searchParams;
+	const url = new URL(document.URL)
+	const params = url.searchParams;
 	const magicValue = params.get(MAGIC_WORD);
 	return magicValue;
 }
@@ -239,9 +261,6 @@ function prepareGrid(keepIndex, keepCount){
 	const cards = listGrid.getElementsByClassName("poster-container");
 	const maxIndex = cards.length -1;
 	keepCount = Math.min(keepCount, cards.length);
-
-	console.debug(listGrid, cards)
-
 	const keep = [keepIndex]
 	for (i = 0; i < keepCount - 1; i++){
 
@@ -378,8 +397,9 @@ function animateLootbox(winnerIndex){
 	const fps = 48;
 	const frameTime = 1/fps;
 	const animationTime = FXtime + 2*rand;
-	const initSpeed = 1.5;
+	const initSpeed = 1;
 	let time = -animationTime;
+	console.debug(time, "init time")
 	let speed = initSpeed;
 	const speedResistance = initSpeed * (1 / (animationTime*fps) * (0.8 + rand/2));
 
@@ -387,7 +407,7 @@ function animateLootbox(winnerIndex){
 	const extraSpace = cardSize[0] * extraCards / 2
 	let lbLenght =  gridSize[0] + extraSpace *2;
 	let space = lbLenght / cards.length;
-	
+
 	// first pass
 	for (i = 0; i < cards.length; i++){
 		const card = cards[i];
@@ -410,6 +430,8 @@ function animateLootbox(winnerIndex){
 			selectCard(cards[0]);
 			openMovie(cards[0]);
 		} else {
+			let bestScore = 1000;
+			let bestCard = null;
 			time += frameTime;
 			speed -= speedResistance;
 			gridSize = [listGrid.clientWidth, listGrid.clientHeight];
@@ -421,16 +443,20 @@ function animateLootbox(winnerIndex){
 			for (i = 0; i < cards.length; i++){
 				const card = cards[i];
 
-				d = speed * -time * cardSize[0]*5;
+				d = speed * -time * cardSize[0]*extraCards;
 				cardCenter = (gridSize[0]/2 - cardSize[0]/2);
 				const cardPos = ((offset + d + space * i) % lbLenght) - extraSpace;
 				card.style.left = cardPos + "px";
 				card.style.top = gridSize[1]/2 - cardSize[1]/2 + "px";
 
-				if (cardPos - cardCenter > -10 && cardPos - cardCenter <= 10){
-					selectCard(card);
+				const score = gridSize[0]/2 - cardPos;
+				if (score < bestScore && score > 0){
+					bestScore = score;
+					bestCard = card;
 				}
 			}
+			if (bestCard)
+				selectCard(bestCard);
 		}	
 	}
 }
@@ -481,4 +507,28 @@ function addStyle(){
 	s.id = "lpStyle";
 	const head = document.getElementsByTagName("head")[0];
 	head.appendChild(s);
+}
+
+async function checkSettings(){
+	await browser.storage.local.get("settings").then( (ls) => {
+		let s = new Settings();
+		if (ls.settings){
+			const keys = Object.keys(s)
+			for (const key of keys) {
+				if (ls.settings[key] != undefined){
+					s[key] = ls.settings[key]
+				}
+			}
+		}
+		settings = s;
+
+		if (s.randomAnimation != "spin")
+			MAGIC_WORD = "random";
+		else
+			MAGIC_WORD = s.randomAnimation;
+
+		animationName = s.randomAnimation;
+		fastRandom = s.randomMethod;
+		FXtime = s.randomAnimationTime;
+	});
 }

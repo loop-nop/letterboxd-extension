@@ -8,26 +8,36 @@
 		<title>letterboxd+ options</title>
 </head>
 	<body>
-		<form>
-			<button type="submit">Save</button>
+		<form id="params">
+			<button type="submit" style="display:none;">Save</button>
 			<div style="text-align:left; margin:0">
 				<ul style="list-style:none; padding:0">
-						<input type="checkbox" name="random" value="true" disabled checked>random button:
+						<input id="rb" type="checkbox" name="random" value="true" checked>random button:
 					<li>
-						method: <select name="randomType" value="accurate">random type
-							<option value="accurate">accurate</option>
+						method: <select id="rm" name="randomType" value="fast">
 							<option value="fast">fast</option>
+							<option value="accurate">accurate</option>
 						</select>
 					</li>
 					<li>
-						animation: <select name="randomFXType" value="lootboxd">random type
-							<option value="none">none</option>
-							<option value="lootboxd">lootboxd</option>
+						animation: <select id="ra" name="randomFXType" value="spin">animation type
 							<option value="spin">spin</option>
+							<option value="lootboxd">lootboxd</option>
+							<option value="none">none</option>
 						</select>
+					</li>
+					<li>
+						<div>
+							<label for="volume">time</label>
+							<input type="range" id="rt" name="time" min="3" max="10" value=3 />
+						</div>
+					</li>
+					<li>
+						<label style="opacity: 0.5;">highlighting based on rating soon?</label>
 					</li>
 				</ul>
-				<input type="checkbox" name="light theme" value="false" disabled>light theme (sooon™)
+				<input id="ltm" style="opacity: 0.5;" type="checkbox" name="light theme" value="false" disabled>
+				<label style="opacity: 0.5;"> light theme (soon™) </label>
 			</div>
 		</form>
 		<script src="options.js"></script>

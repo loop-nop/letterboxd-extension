@@ -33,9 +33,9 @@
     "default_popup": "options/options.html"
   },
 
-  "permissions": ["webNavigation"],
+  "permissions": ["webNavigation", "storage"],
 
-  "version": "0.20",
+  "version": "0.32",
 
   "options_ui": {
     "page": "options/options.html",
