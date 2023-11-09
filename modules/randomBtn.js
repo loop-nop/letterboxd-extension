@@ -17,7 +17,7 @@ class Settings{
 	}
 }
 
-let MAGIC_WORD = "random"
+const MAGIC_WORD = "random"
 let animationName = "lootboxd";
 let fastRandom = "fast";
 let FXtime = 2;
@@ -163,14 +163,16 @@ function getRandomIntInclusive(min, max) {
 	// The maximum is inclusive and the minimum is inclusive
 }
 
+// in order to calculate total number of movies i need to check 2 additional pages.
+// this will run only on explicit demand
 async function getPageSize(url){
 	const listPageText = await fetch(url).then((r) => {
 			const res = r.text();
 			return res;
 	});
-	const templ = document.createElement("template");
-	templ.innerHTML = listPageText;
-	const movies = getPageMovies(templ.content)
+	const template = document.createElement("template");
+	template.innerHTML = listPageText;
+	const movies = getPageMovies(template.content)
 	//console.debug("pagination =", movies.length)
 	return movies.length;
 }
@@ -185,7 +187,7 @@ function getPageMovies(pageContent){
 function createRandomButton(){
 	const randomButton =  document.createElement("button")
 	randomButton.classList = "button clipboardtrigger has-icon"
-	randomButton.innerHTML = MAGIC_WORD
+	randomButton.textContent = MAGIC_WORD
 
 	const ButtonSpace = document.createElement("li")
 	ButtonSpace.classList.add("panel-signin")
@@ -503,8 +505,8 @@ function addStyle(){
 	if (document.getElementById("lpStyle"))
 		return;
 	const s = document.createElement("style");
-	s.innerHTML = style;
 	s.id = "lpStyle";
+	s.innerText = style;
 	const head = document.getElementsByTagName("head")[0];
 	head.appendChild(s);
 }
@@ -521,11 +523,6 @@ async function checkSettings(){
 			}
 		}
 		settings = s;
-
-		if (s.randomAnimation != "spin")
-			MAGIC_WORD = "random";
-		else
-			MAGIC_WORD = s.randomAnimation;
 
 		animationName = s.randomAnimation;
 		fastRandom = s.randomMethod;
