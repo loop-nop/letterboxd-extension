@@ -4,27 +4,24 @@
       "id": "@letterboxd_plus"
     }
   },
-
   "default_locale": "en",
   "name": "letterboxd+",
   "description": "Random button for movie lists and no more!",
-
   "content_scripts": [
     {
       "matches": [
         "*://*.letterboxd.com/*/list/*",
         "*://*.letterboxd.com/*/watchlist/*"
       ],
-      "js": ["/modules/randomBtn.js"]
+      "js": [
+        "/modules/randomBtn.js"
+      ]
     }
   ],
-
   "manifest_version": 2,
-
   "icons": {
     "64": "icon.png"
   },
-
   "browser_action": {
     "default_title": "testT",
     "default_icon": {
@@ -32,15 +29,16 @@
     },
     "default_popup": "options/options.html"
   },
-
-  "permissions": ["webNavigation", "storage"],
-
-  "version": "0.32",
-
+  "permissions": [
+    "webNavigation",
+    "storage"
+  ],
+  "version": "0.321",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": false
   },
-
-  "web_accessible_resources": ["images/my-image.png"]
+  "web_accessible_resources": [
+    "images/my-image.png"
+  ]
 }
