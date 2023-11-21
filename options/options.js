@@ -2,7 +2,7 @@ class Settings{
 	constructor(){
 		this.random = true;
 		this.randomMethod = "fast";
-		this.randomAnimation = "spin";
+		this.randomAnimation = "none";
 		this.randomAnimationTime = 2;
 	}
 }
