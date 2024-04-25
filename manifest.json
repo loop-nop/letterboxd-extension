@@ -4,9 +4,22 @@
       "id": "@letterboxd_plus"
     }
   },
+
+  "version": "0.321",
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": false
+  },
+
+  "permissions": [
+    "webNavigation",
+    "storage"
+  ],
+
   "default_locale": "en",
   "name": "letterboxd+",
-  "description": "Random button for movie lists and no more!",
+  "description": "random button, rating from other platforms",
+
   "content_scripts": [
     {
       "matches": [
@@ -14,31 +27,22 @@
         "*://*.letterboxd.com/*/watchlist/*"
       ],
       "js": [
-        "/modules/randomBtn.js"
+        "/utils.js", "/modules/random.js"
       ]
     }
   ],
+
+  "web_accessible_resources": ["utils.js"],
+
   "manifest_version": 2,
   "icons": {
     "64": "icon.png"
   },
+
   "browser_action": {
-    "default_title": "testT",
     "default_icon": {
       "64": "icon.png"
     },
     "default_popup": "options/options.html"
-  },
-  "permissions": [
-    "webNavigation",
-    "storage"
-  ],
-  "version": "0.321",
-  "options_ui": {
-    "page": "options/options.html",
-    "open_in_tab": false
-  },
-  "web_accessible_resources": [
-    "images/my-image.png"
-  ]
+  }
 }

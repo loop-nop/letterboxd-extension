@@ -14,15 +14,15 @@
 		<button type="submit" style="display:none;">Save</button>
 		<div style="text-align:left; margin:0">
 			<ul style="list-style:none; padding:0">
-				<input id="rb" type="checkbox" name="random" value="true" checked>random button:
+				<input id="random" type="checkbox" name="random" value="true" checked>random button:
 				<li>
-					method: <select id="rm" name="randomType" value="fast">
+					method: <select id="random-method" name="randomType" value="fast">
 						<option value="fast">fast</option>
 						<option value="accurate">accurate</option>
 					</select>
 				</li>
 				<li>
-					animation: <select id="ra" name="randomFXType" value="spin">animation type
+					animation: <select id="random-anim" name="randomFXType" value="spin">animation type
 						<option value="none">none</option>
 						<option value="spin">spin</option>
 						<option value="lootboxd">lootboxd</option>
@@ -31,7 +31,7 @@
 				<li>
 					<div>
 						<label for="volume">time</label>
-						<input type="range" id="rt" name="time" min="3" max="10" value=3 />
+						<input id="random-time" type="range" name="time" min="3" max="10" value=3 />
 					</div>
 				</li>
 				<li>
@@ -42,6 +42,7 @@
 			<label style="opacity: 0.5;"> light theme (soon™) </label>
 		</div>
 	</form>
+	<script src="../utils.js"></script>
 	<script src="options.js"></script>
 </body>
 

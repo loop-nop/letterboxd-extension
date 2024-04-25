@@ -1,93 +1,54 @@
-class Settings{
-	constructor(){
-		this.random = true;
-		this.randomMethod = "fast";
-		this.randomAnimation = "none";
-		this.randomAnimationTime = 2;
-	}
+const randomBoolElement = document.getElementById("random");
+const randomMethodElement = document.getElementById("random-method");
+const randomAnimationElement = document.getElementById("random-anim");
+const randomAnimationTimeElement = document.getElementById("random-time");
+
+document.addEventListener("DOMContentLoaded", init, { once: true });
+
+// document.querySelector("form").addEventListener("submit", submitOptions);
+let inter = setTimeout(saveOptions, 10);
+const form = document.getElementById("params");
+
+async function init() {
+  // load
+  setPageSettings(await LBPlus.getSettings());
+
+  form.addEventListener("click", function () {
+    clearTimeout(inter);
+    inter = setTimeout(saveOptions, 10);
+  });
 }
 
-const randomBoolElement = document.getElementById("rb");
-const randomMethodElement = document.getElementById("rm");
-const randomAnimationElement = document.getElementById("ra");
-const randomAnimationTimeElement = document.getElementById("rt");
-
-
-async function init(){
-	setPageSettings(await getStorage());
+function getPageSettings() {
+  const s = new Settings();
+  s.random = Boolean(randomBoolElement.checked);
+  s.randomMethod = randomMethodElement.value;
+  s.randomAnimation = randomAnimationElement.value;
+  s.randomAnimationTime = Number(randomAnimationTimeElement.value);
+  return s;
 }
 
-function getPageSettings(){
-	const s = new Settings;
-
-	s.random = Boolean(randomBoolElement.checked);
-	s.randomMethod = randomMethodElement.value;
-	s.randomAnimation = randomAnimationElement.value;
-	s.randomAnimationTime = Number(randomAnimationTimeElement.value)
-	return s
+function setPageSettings(settings) {
+  setCheckBox(randomBoolElement, settings.random);
+  randomMethodElement.value = settings.randomMethod;
+  randomAnimationElement.value = settings.randomAnimation;
+  randomAnimationTimeElement.value = settings.randomAnimationTime;
 }
 
-function setPageSettings(s){
-	setCheckBox(randomBoolElement, s.random);
-	randomMethodElement.value = s.randomMethod;
-	randomAnimationElement.value = s.randomAnimation;
-	randomAnimationTimeElement.value = s.randomAnimationTime;
+function setCheckBox(button, value) {
+  button.value = value;
+  button.checked = value;
 }
 
-function setCheckBox(button, value){
-	button.value = value;
-	button.checked = value;
+function submitOptions(e) {
+  e.preventDefault();
+  saveOptions();
 }
 
-async function submitOptions(e) {
-	e.preventDefault();
-	saveOptions()
+function saveOptions() {
+  const s = getPageSettings();
+  // console.log(s)
+  LBPlus.setSettings(s);
 }
 
-async function saveOptions() {
-	let s = getPageSettings();
-	console.log(s)
-	setStorage(s);
-}
-
-async function getStorage() {
-	let s = new Settings();
-	await browser.storage.local.get("settings").then(
-		async (e) => {
-			if (!e.settings){
-				await setOptions(s);
-			}else{
-				const ek = Object.keys(e.settings);
-				for (const key of ek){
-					if (e.settings[key] != undefined)
-						s[key] = e.settings[key];
-				}
-			}
-		}
-	)
-	return s;
-}
-
-async function setStorage(settings) {
-	await browser.storage.local.set({
-		settings: {
-			"random": settings.random,
-			"randomMethod": settings.randomMethod,
-			"randomAnimation": settings.randomAnimation,
-			"randomAnimationTime": settings.randomAnimationTime
-		}
-	})
-	//console.debug("set:", settings)
-}
-
-document.querySelector("form").addEventListener("submit", submitOptions);
-
-
-var inter = setTimeout(saveOptions, (10)); 
-var form = document.getElementById('params');
-form.addEventListener('click',function(){  
-  clearTimeout(inter);
-  inter = setTimeout(saveOptions, (10));
-});
-
-init();
+// auto save on update
