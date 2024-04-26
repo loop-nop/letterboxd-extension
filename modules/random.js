@@ -28,10 +28,9 @@ let animId = null;
 init();
 
 async function init() {
-  console.log("hello2?");
   await checkSettings();
 
-  console.log(settings);
+  // console.log(settings);
   if (!settings.random) {
     return;
   }
@@ -103,7 +102,10 @@ function goToMovie(pageNumber, movieIndex) {
 
   const movieUrl = getPageUrl(pageNumber);
   if (movieUrl) {
-    const url = [movieUrl, "?", MAGIC_WORD, "=", movieIndex].join("");
+    const url = [movieUrl, "?", MAGIC_WORD, "=", movieIndex].join("").replace(
+      "detail/",
+      "",
+    );
     document.location.href = url;
   } else {
     document.search = "";
@@ -382,9 +384,8 @@ function animateCarousel(winnerIndex) {
       speed -= speedResistance;
       const gridSize = [listGrid.clientWidth, listGrid.clientHeight];
 
-      const minDist =
-        (Math.min(gridSize[0] - margin, gridSize[1] - margin) -
-          Math.max(cardSize[0], cardSize[1])) / 2;
+      const minDist = (Math.min(gridSize[0] - margin, gridSize[1] - margin) -
+        Math.max(cardSize[0], cardSize[1])) / 2;
 
       for (i = 0; i < cards.length; i++) {
         const card = cards[i];
@@ -534,7 +535,7 @@ function addStyle() {
 
 async function checkSettings() {
   await browser.storage.local.get("settings").then((ls) => {
-    let s = new Settings();
+    const s = new LBPSettings();
     if (ls.settings) {
       const keys = Object.keys(s);
       for (const key of keys) {

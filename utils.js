@@ -1,4 +1,4 @@
-class Settings {
+class LBPSettings {
   constructor() {
     this.random = true;
     this.randomMethod = "accurate";
@@ -7,13 +7,16 @@ class Settings {
   }
 }
 
+class LBPMovie {
+}
+
 class LBPlus {
   constructor() {}
 
   static getSettings() {
     return new Promise((resolve) => {
       chrome.storage.local.get("settings", async (o) => {
-        const s = new Settings();
+        const s = new LBPSettings();
         console.log("get: ", o);
 
         if (o["settings"] == null) {

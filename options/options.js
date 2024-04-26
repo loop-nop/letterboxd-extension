@@ -5,7 +5,6 @@ const randomAnimationTimeElement = document.getElementById("random-time");
 
 document.addEventListener("DOMContentLoaded", init, { once: true });
 
-// document.querySelector("form").addEventListener("submit", submitOptions);
 let inter = setTimeout(saveOptions, 10);
 const form = document.getElementById("params");
 
@@ -13,6 +12,8 @@ async function init() {
   // load
   setPageSettings(await LBPlus.getSettings());
 
+  // auto save on update
+  document.querySelector("form").addEventListener("submit", submitOptions);
   form.addEventListener("click", function () {
     clearTimeout(inter);
     inter = setTimeout(saveOptions, 10);
@@ -20,7 +21,7 @@ async function init() {
 }
 
 function getPageSettings() {
-  const s = new Settings();
+  const s = new LBPSettings();
   s.random = Boolean(randomBoolElement.checked);
   s.randomMethod = randomMethodElement.value;
   s.randomAnimation = randomAnimationElement.value;
@@ -50,5 +51,3 @@ function saveOptions() {
   // console.log(s)
   LBPlus.setSettings(s);
 }
-
-// auto save on update
