@@ -1,3 +1,5 @@
+const SETTINGSVAR = "LBPSettings";
+
 class LBPSettings {
   constructor() {
     this.random = true;
@@ -8,6 +10,10 @@ class LBPSettings {
 }
 
 class LBPMovie {
+  constructor() {
+    this.id = -0;
+    this.rating = 0.0;
+  }
 }
 
 class LBPlus {
@@ -15,14 +21,14 @@ class LBPlus {
 
   static getSettings() {
     return new Promise((resolve) => {
-      chrome.storage.local.get("settings", async (o) => {
-        const s = new LBPSettings();
+      chrome.storage.local.get(SETTINGSVAR, async (o) => {
+        let s = new LBPSettings();
         console.log("get: ", o);
 
-        if (o["settings"] == null) {
-          await setSettings(s);
+        if (o[SETTINGSVAR] == null) {
+          this.setSettings(s);
         } else {
-          const settings = o["settings"];
+          const settings = o[SETTINGSVAR];
           const ek = Object.keys(settings);
           for (const key of ek) {
             if (settings[key] != undefined) {
@@ -30,20 +36,21 @@ class LBPlus {
             }
           }
         }
+        // console.debug("resolving: ", s);
         resolve(s);
       });
     });
   }
 
-  static async setSettings(settings) {
-    await chrome.storage.local.set({
-      "settings": {
+  static setSettings(settings) {
+    chrome.storage.local.set({
+      [SETTINGSVAR]: {
         "random": settings.random,
         "randomMethod": settings.randomMethod,
         "randomAnimation": settings.randomAnimation,
         "randomAnimationTime": settings.randomAnimationTime,
       },
     });
-    console.debug("set:", settings);
+    // console.debug("set:", settings);
   }
 }

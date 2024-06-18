@@ -25,10 +25,14 @@ let animId = null;
 
 // document.addEventListener("DOMContentLoaded", init, {once: true})
 // console.log("hello?")
-init();
+LBPlus.getSettings().then((s) => init(s));
 
-async function init() {
-  await checkSettings();
+function init(s) {
+  settings = s;
+
+  animationName = s.randomAnimation;
+  fastRandom = s.randomMethod;
+  FXtime = s.randomAnimationTime;
 
   // console.log(settings);
   if (!settings.random) {
@@ -53,12 +57,13 @@ function start() {
 
   const totalPages = getPagesCount(document);
   switch (fastRandom) {
-    case "fast":
+    case "fast": {
       const randomPage = getRandomIntInclusive(1, totalPages);
       goToMovie(randomPage, -1);
       break;
+    }
     case "accurate":
-    default:
+    default: {
       const firstPageUrl = getPageUrl(1);
       const paginationSize = getPageSize(firstPageUrl);
       const lastPageUrl = getPageUrl(totalPages);
@@ -89,6 +94,7 @@ function start() {
         goToMovie(moviePage, movieIndex);
       });
       break;
+    }
   }
 }
 
@@ -195,7 +201,8 @@ function getPageMovies(pageContent) {
 
 function createRandomButton() {
   const randomButton = document.createElement("button");
-  randomButton.classList = "button clipboardtrigger has-icon";
+  randomButton.classList = "button";
+  randomButton.style = "padding: 0.5em; font-weight: bolder;";
   randomButton.textContent = MAGIC_WORD;
 
   const ButtonSpace = document.createElement("li");
@@ -531,23 +538,4 @@ function addStyle() {
   s.innerText = style;
   const head = document.getElementsByTagName("head")[0];
   head.appendChild(s);
-}
-
-async function checkSettings() {
-  await browser.storage.local.get("settings").then((ls) => {
-    const s = new LBPSettings();
-    if (ls.settings) {
-      const keys = Object.keys(s);
-      for (const key of keys) {
-        if (ls.settings[key] != undefined) {
-          s[key] = ls.settings[key];
-        }
-      }
-    }
-    settings = s;
-
-    animationName = s.randomAnimation;
-    fastRandom = s.randomMethod;
-    FXtime = s.randomAnimationTime;
-  });
 }

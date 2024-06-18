@@ -3,10 +3,10 @@ const randomMethodElement = document.getElementById("random-method");
 const randomAnimationElement = document.getElementById("random-anim");
 const randomAnimationTimeElement = document.getElementById("random-time");
 
-document.addEventListener("DOMContentLoaded", init, { once: true });
-
-let inter = setTimeout(saveOptions, 10);
+let inter = setTimeout(() => {}, 10);
 const form = document.getElementById("params");
+
+document.addEventListener("DOMContentLoaded", init, { once: true });
 
 async function init() {
   // load

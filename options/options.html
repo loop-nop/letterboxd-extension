@@ -13,33 +13,62 @@
 	<form id="params">
 		<button type="submit" style="display:none;">Save</button>
 		<div style="text-align:left; margin:0">
+			<h2>random</h2>
 			<ul style="list-style:none; padding:0">
-				<input id="random" type="checkbox" name="random" value="true" checked>random button:
-				<li>
-					method: <select id="random-method" name="randomType" value="fast">
-						<option value="fast">fast</option>
-						<option value="accurate">accurate</option>
-					</select>
-				</li>
-				<li>
-					animation: <select id="random-anim" name="randomFXType" value="spin">animation type
-						<option value="none">none</option>
-						<option value="spin">spin</option>
-						<option value="lootboxd">lootboxd</option>
-					</select>
-				</li>
-				<li>
-					<div>
-						<label for="volume">time</label>
-						<input id="random-time" type="range" name="time" min="3" max="10" value=3 />
-					</div>
-				</li>
-				<li>
-					<label style="opacity: 0.5;">highlighting based on rating soon?</label>
-				</li>
-			</ul>
-			<input id="ltm" style="opacity: 0.5;" type="checkbox" name="light theme" value="false" disabled>
-			<label style="opacity: 0.5;"> light theme (soon™) </label>
+				<input id="random" type="checkbox" name="random" value="true" checked>random button: </input>
+				<div id="random-params">
+					<li>
+						method: <select id="random-method" name="randomType" value="fast">
+							<option value="fast">fast</option>
+							<option value="accurate">accurate</option>
+						</select>
+					</li>
+					<li>
+						animation: <select id="random-anim" name="randomFXType" value="spin">animation type
+							<option value="none">none</option>
+							<option value="spin">spin</option>
+							<option value="lootboxd">lootboxd</option>
+						</select>
+					</li>
+					<li>
+						<div>
+							<label for="volume">time</label>
+							<input id="random-time" type="range" name="time" min="3" max="10" value=3 />
+						</div>
+					</li>
+					<li style="opacity:0.25">
+							<input id="rbor" style="opacity=0.5;" type="checkbox" name="random" value="true" disabled> border color base on rating</input>
+						<label style="opacity: 0.5;"></label>
+					</li>
+				</ul>
+			</div>
+
+		<div id="rating" style="opacity:0.5">
+			<h2>rating</h2>
+			<input id="qrating" style="opacity:0.5;" type="checkbox" name="random" value="false" disabled>quick rating</input>
+			<div id="raiting-params" style="opacity:0.5;">
+					<ul style="list-style:none; padding:0,1em">
+						<li>
+							<input id="imdb" style="opacity:0.5;" type="checkbox" name="random" value="false" disabled>IMDB</input>
+						</li>
+						<li>
+							<input id="tmdb" style="opacity:0.5;" type="checkbox" name="random" value="false" disabled>TMDB</input>
+						</li>
+						<li>
+							<input id="kip" style="opacity:0.5;" type="checkbox" name="random" value="false" disabled>kinopoisk</input>
+						</li>
+						<li>
+							<input id="tomato" style="opacity:0.5;" type="checkbox" name="random" value="false" disabled>tomato</input>
+						</li>
+					</ul>
+			</div>
+		</div>
+
+		<div id="other" style="opacity:0.5;">
+			<h2>other</h2>
+			<input id="ltm" style="opacity: 0.5;" type="checkbox" name="light theme" value="false" disabled>light theme</input>
+		</div>
+
 		</div>
 	</form>
 	<script src="../utils.js"></script>
