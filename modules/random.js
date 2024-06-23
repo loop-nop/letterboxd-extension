@@ -1,7 +1,7 @@
 /*
 This code will run ONLY on
-    letterboxd/(username)/list/*
-    letterboxd/(username)/watchlist/*
+	letterboxd/(username)/list/*
+	letterboxd/(username)/watchlist/*
 */
 
 // Module for choosing random movie from a list.
@@ -178,8 +178,6 @@ function getRandomIntInclusive(min, max) {
   // The maximum is inclusive and the minimum is inclusive
 }
 
-// in order to calculate total number of movies i need to check 2 additional pages.
-// this will run only on explicit demand
 async function getPageSize(url) {
   const listPageText = await fetch(url).then((r) => {
     const res = r.text();
@@ -201,8 +199,7 @@ function getPageMovies(pageContent) {
 
 function createRandomButton() {
   const randomButton = document.createElement("button");
-  randomButton.classList = "button";
-  randomButton.style = "padding: 0.5em; font-weight: bolder;";
+  randomButton.classList = "lpButton button";
   randomButton.textContent = MAGIC_WORD;
 
   const ButtonSpace = document.createElement("li");
@@ -493,43 +490,51 @@ function animateLootbox(winnerIndex) {
 
 function addStyle() {
   const style = `
-	.lpGrid {
-		!important;
-		height: 100vh;
-		flex: auto;
-		margin-right: 2em;
-		max-width: none !important;
-	}
+		.lpGrid {
+				!important;
+				height: 100vh;
+				flex: auto;
+				margin-right: 2em;
+				max-width: none !important;
+		}
 
-	.lpGrid > li {
-		height: fit-content;
-	}
+		.lpButton {
+				padding: 0.5em !important;
+				font-weight: bold !important;
+				background-color: #567 !important;
+				font-family: revert !important;
+		}
 
-	.lpGrid > li > div {
-		height: 100%;
-		width: 100%;
-	}
+		.lpGrid > li {
+				height: fit-content;
+		}
 
-	.lpHighlight {
-		border: 0.5em gray solid;
-		box-shadow: 0px 0px 1em 0.5em gray;
-		border-radius: 0.5em;
-	}
+		.lpGrid > li > div {
+				height: 100%;
+				width: 100%;
+		}
 
-	.lpSelect {
-		border: 0.5em lightblue solid !important;
-		box-shadow: 0px 0px 1em 0.5em lightblue !important;
-		transform: scale(1.15) !important;
-	}
+		.lpHighlight {
+				border: 0.5em gray solid;
+				box-shadow: 0px 0px 1em 0.5em gray;
+				border-radius: 0.5em;
+		}
 
-	.lpFloating {
-		transition: none !important;
-		height: fit-content;
-		position: absolute;
-		left: 50%;
-		top: 50%;
-	}
+		.lpSelect {
+				border: 0.5em lightblue solid !important;
+				box-shadow: 0px 0px 1em 0.5em lightblue !important;
+				transform: scale(1.15) !important;
+		}
+
+		.lpFloating {
+				transition: none !important;
+				height: fit-content;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+		}
 	`;
+
   if (document.getElementById("lpStyle")) {
     return;
   }
