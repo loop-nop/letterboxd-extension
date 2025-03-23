@@ -5,7 +5,7 @@
     }
   },
 
-  "version": "0.322",
+  "version": "0.323",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
@@ -32,14 +32,12 @@
     }
   ],
 
-  "web_accessible_resources": [""],
-
-  "manifest_version": 2,
+  "manifest_version": 3,
   "icons": {
     "64": "icon.png"
   },
 
-  "browser_action": {
+  "action": {
     "default_icon": {
       "64": "icon.png"
     },
