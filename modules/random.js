@@ -295,7 +295,7 @@ function maximizeContent() {
 
 function prepareGrid(keepIndex, keepCount) {
   const listGrid = getGrid(document);
-  const cards = listGrid.getElementsByClassName("poster-container");
+  const cards = listGrid.getElementsByTagName("li");
   const maxIndex = cards.length - 1;
   keepCount = Math.min(keepCount, cards.length);
   const keep = [keepIndex];
