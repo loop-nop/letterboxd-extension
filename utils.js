@@ -23,7 +23,7 @@ class LBPlus {
     return new Promise((resolve) => {
       chrome.storage.local.get(SETTINGSVAR, async (o) => {
         let s = new LBPSettings();
-        console.log("get: ", o);
+        // console.log("get: ", o);
 
         if (o[SETTINGSVAR] == null) {
           this.setSettings(s);

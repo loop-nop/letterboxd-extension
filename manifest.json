@@ -5,7 +5,7 @@
     }
   },
 
-  "version": "0.323",
+  "version": "0.330",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
