@@ -143,15 +143,34 @@ function selectMovie(index) {
   }
 }
 
-function openMovie(movieElement) {
-  let url = movieElement.getElementsByClassName("film-poster")[0].getAttribute(
-    "data-target-link",
-  );
-  if (url != null) {
-    url = "https://letterboxd.com" + url;
-  } else {
-    url = movieElement.getElementsByTagName("a")[0].href;
+function extractMovieURL(movieElement) {
+  let url = null;
+
+  // url = movieElement.getElementsByClassName("film-poster")[0].getAttribute(
+  //   "data-target-link",
+  // );
+
+  if (!url)
+  {
+    let rawHTML = movieElement.innerHTML;
+
+    const re = /\/film\/[\w-]{1,}\//g;
+    const urls = rawHTML.match(re)
+    if (urls.length > 0)
+      url = urls[0];
   }
+
+  if (url != null)
+    url = "https://letterboxd.com" + url;
+
+  return url
+}
+
+function openMovie(movieElement) {
+  if (!movieElement)
+    console.error("invalid mevieElement")
+  
+  let url = extractMovieURL(movieElement)
 
   if (url) {
     if (animationName == "none") {
