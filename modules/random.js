@@ -24,7 +24,6 @@ let zMemory = null;
 let animId = null;
 
 // document.addEventListener("DOMContentLoaded", init, {once: true})
-// console.log("hello?")
 LBPlus.getSettings().then((s) => init(s));
 
 function init(s) {
@@ -34,7 +33,7 @@ function init(s) {
   fastRandom = s.randomMethod;
   FXtime = s.randomAnimationTime;
 
-  // console.log(settings);
+  // console.debug(settings);
   if (!settings.random) {
     return;
   }
@@ -77,19 +76,19 @@ function start() {
         const moviePage = Math.ceil(randomMovieIndex / values[0]);
         const movieIndex = randomMovieIndex % values[0];
 
-        console.debug(
-          "pagination =",
-          values[0],
-          "lastPageSize =",
-          values[1],
-          "total:",
-          totalMoviesCount,
-          totalPages,
-          "randomIndex:",
-          randomMovieIndex,
-          moviePage,
-          movieIndex,
-        );
+        // console.debug(
+        //   "pagination =",
+        //   values[0],
+        //   "lastPageSize =",
+        //   values[1],
+        //   "total:",
+        //   totalMoviesCount,
+        //   totalPages,
+        //   "randomIndex:",
+        //   randomMovieIndex,
+        //   moviePage,
+        //   movieIndex,
+        // );
         button.disabled = false;
         goToMovie(moviePage, movieIndex);
       });
@@ -102,16 +101,15 @@ function goToMovie(pageNumber, movieIndex) {
   const movies = getPageMovies(document);
   if (movieIndex < 1 || movieIndex > movies.length) {
     movieIndex = getRandomIntInclusive(1, movies.length);
-    console.debug("new Index (goto)", movieIndex);
+    // console.debug("new Index (goto)", movieIndex);
   }
-  console.debug("goToMovie", pageNumber, movieIndex);
+  // console.debug("goToMovie", pageNumber, movieIndex);
 
   const movieUrl = getPageUrl(pageNumber);
   if (movieUrl) {
-    const url = [movieUrl, "?", MAGIC_WORD, "=", movieIndex].join("").replace(
-      "detail/",
-      "",
-    );
+    const url = [movieUrl, "?", MAGIC_WORD, "=", movieIndex]
+      .join("")
+      .replace("detail/", "");
     document.location.href = url;
   } else {
     document.search = "";
@@ -123,7 +121,7 @@ function selectMovie(index) {
   const movies = getPageMovies(document);
   if (index < 1 || index > movies.length) {
     index = getRandomIntInclusive(1, movies.length);
-    console.debug("new Index", index);
+    // console.debug("new Index", index);
   }
 
   // for some reason film indexes starts at one.
@@ -150,27 +148,23 @@ function extractMovieURL(movieElement) {
   //   "data-target-link",
   // );
 
-  if (!url)
-  {
+  if (!url) {
     let rawHTML = movieElement.innerHTML;
 
     const re = /\/film\/[\w-]{1,}\//g;
-    const urls = rawHTML.match(re)
-    if (urls.length > 0)
-      url = urls[0];
+    const urls = rawHTML.match(re);
+    if (urls.length > 0) url = urls[0];
   }
 
-  if (url != null)
-    url = "https://letterboxd.com" + url;
+  if (url != null) url = "https://letterboxd.com" + url;
 
-  return url
+  return url;
 }
 
 function openMovie(movieElement) {
-  if (!movieElement)
-    console.error("invalid mevieElement")
-  
-  let url = extractMovieURL(movieElement)
+  if (!movieElement) console.error("invalid mevieElement");
+
+  let url = extractMovieURL(movieElement);
 
   if (url) {
     if (animationName == "none") {
@@ -216,7 +210,27 @@ function getPageMovies(pageContent) {
   return movies;
 }
 
-function createRandomButton() {
+function waitForElm(selector) {
+  return new Promise((resolve) => {
+    if (document.querySelector(selector)) {
+      return resolve(document.querySelector(selector));
+    }
+
+    const observer = new MutationObserver((mutations) => {
+      if (document.querySelector(selector)) {
+        observer.disconnect();
+        resolve(document.querySelector(selector));
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  });
+}
+
+async function createRandomButton() {
   const randomButton = document.createElement("button");
   randomButton.classList = "lpButton button";
   randomButton.textContent = MAGIC_WORD;
@@ -226,11 +240,9 @@ function createRandomButton() {
   ButtonSpace.appendChild(randomButton);
   ButtonSpace.onclick = start;
 
-  const PanelUl =
-    document.getElementsByClassName("actions-panel")[0].getElementsByTagName(
-      "ul",
-    )[0];
-  const InsertTarget = PanelUl.getElementsByTagName("li")[0];
+  const InsertTarget = await waitForElm(".actions-panel ul li");
+  const PanelUl = InsertTarget.parentElement;
+
   button = PanelUl.insertBefore(ButtonSpace, InsertTarget);
 }
 
@@ -245,7 +257,9 @@ function getPagesCount(pageContent) {
 
 function getPageUrl(pageNumber) {
   let url = getListUrl(document.URL);
-  (pageNumber > 1) ? url += "page/" + pageNumber : url = url.split("page/")[0];
+  pageNumber > 1
+    ? (url += "page/" + pageNumber)
+    : (url = url.split("page/")[0]);
   return url;
 }
 
@@ -279,10 +293,9 @@ function getListUrl(pageUrl) {
 }
 
 function maximizeContent() {
-  const contentWrapper =
-    document.getElementById("content").getElementsByClassName(
-      "content-wrap",
-    )[0];
+  const contentWrapper = document
+    .getElementById("content")
+    .getElementsByClassName("content-wrap")[0];
   const contentColWrapper =
     contentWrapper.getElementsByClassName("col-main")[0];
   const gridElement = getGrid(document);
@@ -326,7 +339,7 @@ function prepareGrid(keepIndex, keepCount) {
   }
 
   for (i = 0; i <= maxIndex; i++) {
-    if (!(keep.includes(i))) {
+    if (!keep.includes(i)) {
       cards[i].style.display = "none";
     } else {
       cards[i].style.display = "block";
@@ -349,11 +362,13 @@ function selectCard(card) {
 }
 
 function getGrid(doc) {
-  let grid =
-    doc.getElementById("content").getElementsByClassName("film-list")[0];
+  let grid = doc
+    .getElementById("content")
+    .getElementsByClassName("film-list")[0];
   if (!grid) {
-    grid =
-      doc.getElementById("content").getElementsByClassName("poster-list")[0];
+    grid = doc
+      .getElementById("content")
+      .getElementsByClassName("poster-list")[0];
   }
   return grid;
 }
@@ -383,16 +398,17 @@ function animateCarousel(winnerIndex) {
   const initSpeed = 1.5;
   let time = -animationTime;
   let speed = initSpeed;
-  const speedResistance = initSpeed *
-    (1 / (animationTime * fps) * (0.8 + rand / 2));
+  const speedResistance =
+    initSpeed * ((1 / (animationTime * fps)) * (0.8 + rand / 2));
 
   const fontSize = Number(
-    window.getComputedStyle(document.body).getPropertyValue("font-size").match(
-      /\d+/,
-    )[0],
+    window
+      .getComputedStyle(document.body)
+      .getPropertyValue("font-size")
+      .match(/\d+/)[0],
   );
   const margin = fontSize * 6;
-  console.debug(fontSize, "margin", margin);
+  // console.debug(fontSize, "margin", margin);
   const cardSize = [cards[0].clientWidth, cards[0].clientHeight];
 
   clearInterval(animId);
@@ -407,13 +423,15 @@ function animateCarousel(winnerIndex) {
       speed -= speedResistance;
       const gridSize = [listGrid.clientWidth, listGrid.clientHeight];
 
-      const minDist = (Math.min(gridSize[0] - margin, gridSize[1] - margin) -
-        Math.max(cardSize[0], cardSize[1])) / 2;
+      const minDist =
+        (Math.min(gridSize[0] - margin, gridSize[1] - margin) -
+          Math.max(cardSize[0], cardSize[1])) /
+        2;
 
       for (i = 0; i < cards.length; i++) {
         const card = cards[i];
 
-        const d = time * speed + (space * i);
+        const d = time * speed + space * i;
         const x = minDist * Math.sin(d);
         const y = minDist * Math.cos(d);
         card.style.left = gridSize[0] / 2 - cardSize[0] / 2 + x + "px";
@@ -443,13 +461,13 @@ function animateLootbox(winnerIndex) {
   const animationTime = FXtime + 2 * rand;
   const initSpeed = 1;
   let time = -animationTime;
-  console.debug(time, "init time");
+  // console.debug(time, "init time");
   let speed = initSpeed;
-  const speedResistance = initSpeed *
-    (1 / (animationTime * fps) * (0.8 + rand / 2));
+  const speedResistance =
+    initSpeed * ((1 / (animationTime * fps)) * (0.8 + rand / 2));
 
   let cardCenter = gridSize[0] / 2 - cardSize[0] / 2;
-  const extraSpace = cardSize[0] * extraCards / 2;
+  const extraSpace = (cardSize[0] * extraCards) / 2;
   let lbLenght = gridSize[0] + extraSpace * 2;
   let space = lbLenght / cards.length;
 
